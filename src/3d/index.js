@@ -24,7 +24,7 @@ export const scene = new THREE.Scene()
 scene.fog = new THREE.Fog(0, 40, 80)
 
 export const light = new THREE.DirectionalLight(0xffffff, 1)
-light.shadow.mapSize.width = light.shadow.mapSize.height = 2048
+light.shadow.mapSize.width = light.shadow.mapSize.height = 1024
 light.position.set(10, 10, 10)
 light.castShadow = true
 scene.add(light)
@@ -43,7 +43,7 @@ window.addEventListener('resize', resize)
 resize()
 
 const render = () => {
-	requestAnimationFrame(render)
+	window.requestAnimationFrame(render)
 	controls.update()
 	renderer.render(scene, camera)
 	stats.update()
