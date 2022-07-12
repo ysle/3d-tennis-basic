@@ -3,6 +3,7 @@ document.title = `${import.meta.env.VITE_APP_NAME} v.${import.meta.env.VITE_APP_
 
 import { scene } from './3d'
 import * as THREE from 'three'
+import Ball from './3d/mesh/ball'
 
 const size = {
 	w: 11.88 * 2,
@@ -14,8 +15,7 @@ const grid = new THREE.GridHelper(200, 200, '#222', '#111')
 grid.position.y = -0.1
 scene.add(grid)
 
-const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(0.1, 2), new THREE.MeshStandardMaterial({ color: '#cf0', wireframe: false }))
-ball.castShadow = true
+const ball = new Ball()
 scene.add(ball)
 
 const court = new THREE.Mesh(new THREE.PlaneGeometry(size.w, size.h), new THREE.MeshStandardMaterial({ color: '#0a0' }))
@@ -84,8 +84,14 @@ let i = 0
 const delay = ms => new Promise(r => setTimeout(r, ms))
 const tick = async () => {
 	i++
-	if (i > pos.length) i = 1
-	if (pos[i]) ball.position.set(pos[i][0], pos[i][2], pos[i][1])
+	if (i > pos.length) {
+		ball.ribbon.clear()
+		i = 1
+	}
+	if (pos[i]) {
+		// ball.position.set(pos[i][0], pos[i][2], pos[i][1])
+		ball.move(pos[i][0], pos[i][2], pos[i][1])
+	}
 	window.requestAnimationFrame(tick)
 }
 tick()
