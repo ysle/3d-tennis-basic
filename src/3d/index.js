@@ -28,7 +28,7 @@ light.shadow.mapSize.width = light.shadow.mapSize.height = 1024
 light.position.set(10, 10, 10)
 light.castShadow = true
 scene.add(light)
-scene.add(new THREE.DirectionalLightHelper(light))
+// scene.add(new THREE.DirectionalLightHelper(light))
 
 export const ambient = new THREE.AmbientLight(0x404040)
 scene.add(ambient)

@@ -4,6 +4,12 @@ document.title = `${import.meta.env.VITE_APP_NAME} v.${import.meta.env.VITE_APP_
 import { scene } from './3d'
 import * as THREE from 'three'
 
+const size = {
+	w: 11.88 * 2,
+	h: 10.97,
+	net: 0.91
+}
+
 const grid = new THREE.GridHelper(200, 200, '#222', '#111')
 grid.position.y = -0.1
 scene.add(grid)
@@ -12,35 +18,52 @@ const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(0.1, 2), new THREE.Mes
 ball.castShadow = true
 scene.add(ball)
 
-const court = new THREE.Mesh(new THREE.PlaneGeometry(11.89 * 2, 10.97), new THREE.MeshStandardMaterial({ color: '#0a0' }))
+const court = new THREE.Mesh(new THREE.PlaneGeometry(size.w, size.h), new THREE.MeshStandardMaterial({ color: '#0a0' }))
 court.rotateX(-Math.PI / 2)
 court.receiveShadow = true
 scene.add(court)
 
-const padding = 3
-const field = new THREE.Mesh(new THREE.PlaneGeometry(11.89 * 2 + padding, 10.97 + padding), new THREE.MeshStandardMaterial({ color: '#030' }))
+const padding = 4
+const field = new THREE.Mesh(new THREE.PlaneGeometry(size.w + padding, size.h + padding), new THREE.MeshStandardMaterial({ color: '#030' }))
 field.rotateX(-Math.PI / 2)
 field.position.setY(-0.05)
 field.receiveShadow = true
 scene.add(field)
 
-const net = new THREE.Mesh(new THREE.PlaneGeometry(0.91, 10.97 + padding / 2, 9, 110), new THREE.MeshStandardMaterial({ color: '#eee', side: THREE.DoubleSide, wireframe: true }))
-net.position.setY(0.91 / 2)
+const net = new THREE.Mesh(new THREE.PlaneGeometry(size.net, size.h + size.net * 2, 9, 110), new THREE.MeshStandardMaterial({ color: '#eee', side: THREE.DoubleSide, wireframe: true }))
+net.position.setY(size.net / 2)
 net.rotateZ(Math.PI / 2)
 net.rotateX(Math.PI / 2)
 net.castShadow = true
 scene.add(net)
 
+// !lines
+
+const material = new THREE.LineBasicMaterial({ color: '#fff' })
+const drawLines = (...points) => scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points.map(([x, y]) => new THREE.Vector3(x, 0.01, y))), material))
+
+const w2 = size.w / 2
+const h2 = size.h / 2
+const alley = h2 - 1.37
+const service = w2 - 5.48
+
+drawLines([w2, h2], [w2, -h2], [-w2, -h2], [-w2, h2], [w2, h2])
+drawLines([w2, alley], [-w2, alley])
+drawLines([w2, -alley], [-w2, -alley])
+drawLines([service, 0], [-service, 0])
+drawLines([service, alley], [service, -alley])
+drawLines([-service, alley], [-service, -alley])
+
 // !options
 
 import { Pane } from 'tweakpane'
 const options = {
-	clay: ['#FFA500', '#FF8C00'], // orange full
-	grass: ['#0a0', '#050'], // green both
 	hard: ['#314f67', '#4794c7'], // blue
-	carpet: ['#5c8543', '#a23729'] // green + red
+	grass: ['#0a0', '#050'], // green both
+	carpet: ['#5c8543', '#a23729'], // green + red
+	clay: ['#FFA500', '#FF8C00'] // orange full
 }
-const params = { surface: 'hard' }
+const params = { surface: '' }
 const pane = new Pane()
 const look = pane.addFolder({ title: 'court type' })
 look.addInput(params, 'surface', { options })
@@ -51,7 +74,7 @@ const updateColors = ({ value: [courtColor, fieldColor] }) => {
 }
 
 pane.on('change', updateColors)
-updateColors({ value: options.clay })
+updateColors({ value: options.hard })
 
 // ! data
 
