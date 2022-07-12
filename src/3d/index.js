@@ -42,10 +42,10 @@ const resize = () => {
 window.addEventListener('resize', resize)
 resize()
 
-const animate = () => {
-	requestAnimationFrame(animate)
+const render = () => {
+	requestAnimationFrame(render)
 	controls.update()
 	renderer.render(scene, camera)
 	stats.update()
 }
-animate()
+render()

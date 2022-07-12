@@ -9,16 +9,22 @@ grid.position.y = -0.1
 scene.add(grid)
 
 const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(0.1, 2), new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false }))
-ball.position.setY(1)
 ball.castShadow = true
 scene.add(ball)
 
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(11.89 * 2, 10.97), new THREE.MeshStandardMaterial({ color: 0x00ff00 }))
-plane.rotateX(-Math.PI / 2)
-plane.receiveShadow = true
-scene.add(plane)
+const court = new THREE.Mesh(new THREE.PlaneGeometry(11.89 * 2, 10.97), new THREE.MeshStandardMaterial({ color: '#0a0' }))
+court.rotateX(-Math.PI / 2)
+court.receiveShadow = true
+scene.add(court)
 
-const net = new THREE.Mesh(new THREE.PlaneGeometry(0.91, 10.97, 9, 110), new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide, wireframe: true }))
+const padding = 3
+const field = new THREE.Mesh(new THREE.PlaneGeometry(11.89 * 2 + padding, 10.97 + padding), new THREE.MeshStandardMaterial({ color: '#030' }))
+field.rotateX(-Math.PI / 2)
+field.position.setY(-0.05)
+field.receiveShadow = true
+scene.add(field)
+
+const net = new THREE.Mesh(new THREE.PlaneGeometry(0.91, 10.97 + padding / 2, 9, 110), new THREE.MeshStandardMaterial({ color: '#eee', side: THREE.DoubleSide, wireframe: true }))
 net.position.setY(0.91 / 2)
 net.rotateZ(Math.PI / 2)
 net.rotateX(Math.PI / 2)
