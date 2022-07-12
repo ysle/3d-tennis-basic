@@ -1,11 +1,16 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import Stats from 'three/examples/jsm/libs/stats.module'
 
 export const renderer = new THREE.WebGLRenderer({ antialias: true })
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 document.body.appendChild(renderer.domElement)
+
+const stats = Stats()
+stats.dom.id = 'stats'
+document.body.appendChild(stats.dom)
 
 export const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
 camera.position.set(30, 30, 30)
@@ -41,5 +46,6 @@ const animate = () => {
 	requestAnimationFrame(animate)
 	controls.update()
 	renderer.render(scene, camera)
+	stats.update()
 }
 animate()
