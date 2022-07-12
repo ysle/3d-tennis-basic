@@ -21,7 +21,7 @@ controls.maxPolarAngle = Math.PI / 2 - 0.03
 controls.maxDistance = 30
 
 export const scene = new THREE.Scene()
-scene.fog = new THREE.Fog(0, 30, 50)
+scene.fog = new THREE.Fog(0, 40, 80)
 
 export const light = new THREE.DirectionalLight(0xffffff, 1)
 light.shadow.mapSize.width = light.shadow.mapSize.height = 2048
