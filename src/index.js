@@ -32,11 +32,12 @@ import pos from './pos.json'
 let i = 0
 const delay = ms => new Promise(r => setTimeout(r, ms))
 const tick = async () => {
-	if (!pos[i]) return
-	await delay(30)
-	pos[i] = [pos[i][0], pos[i][2], pos[i][1]]
-	ball.position.set(...pos[i])
-	i++
+	if (pos[i]) {
+		pos[i] = [pos[i][0], pos[i][2], pos[i][1]]
+		ball.position.set(...pos[i])
+		i++
+		await delay(30) // big nope
+	}
 	window.requestAnimationFrame(tick)
 }
 tick()
