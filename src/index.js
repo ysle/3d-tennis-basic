@@ -18,7 +18,7 @@ plane.rotateX(-Math.PI / 2)
 plane.receiveShadow = true
 scene.add(plane)
 
-const net = new THREE.Mesh(new THREE.PlaneGeometry(0.91, 10.97, 10, 100), new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide, wireframe: true }))
+const net = new THREE.Mesh(new THREE.PlaneGeometry(0.91, 10.97, 9, 110), new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide, wireframe: true }))
 net.position.setY(0.91 / 2)
 net.rotateZ(Math.PI / 2)
 net.rotateX(Math.PI / 2)
