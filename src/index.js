@@ -2,6 +2,8 @@ import './style.css'
 import { scene, controls } from './3d'
 import * as THREE from 'three'
 
+document.title = `${import.meta.env.VITE_APP_NAME} v.${import.meta.env.VITE_APP_VERSION}`
+
 const grid = new THREE.GridHelper(200, 200, '#222', '#111')
 grid.position.y = -0.1
 scene.add(grid)
