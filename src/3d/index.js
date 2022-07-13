@@ -16,7 +16,8 @@ export const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
 camera.position.set(30, 30, 30)
 
 export const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = controls.autoRotate = true
+controls.enableDamping = true
+controls.autoRotate = true
 controls.maxPolarAngle = Math.PI / 2 - 0.03
 controls.maxDistance = 30
 

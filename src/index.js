@@ -57,24 +57,34 @@ drawLines([-service, alley], [-service, -alley])
 // !options
 
 import { Pane } from 'tweakpane'
+
 const options = {
 	hard: ['#314f67', '#4794c7'], // blue
 	grass: ['#0a0', '#050'], // green both
 	carpet: ['#5c8543', '#a23729'], // green + red
 	clay: ['#FFA500', '#FF8C00'] // orange full
 }
-const params = { surface: '' }
+const params = { surface: '', textured: localStorage.getItem('textured') === 'true' }
 const pane = new Pane()
 const look = pane.addFolder({ title: 'court type' })
 look.addInput(params, 'surface', { options })
+// look.addInput(params, 'surface', { options })
 
 const updateColors = ({ value: [courtColor, fieldColor] }) => {
 	court.material.color.set(courtColor)
 	field.material.color.set(fieldColor)
 }
 
-pane.on('change', updateColors)
+look.on('change', updateColors)
 updateColors({ value: options.hard })
+
+const trail = pane.addFolder({ title: 'ball trail' })
+trail.addInput(params, 'textured')
+trail.on('change', ({ value }) => {
+	localStorage.setItem('textured', value)
+	ball.ribbon?.useTexture(value)
+})
+ball.ribbon?.useTexture(params.textured)
 
 // ! data
 
@@ -85,13 +95,16 @@ const delay = ms => new Promise(r => setTimeout(r, ms))
 const tick = async () => {
 	i++
 	if (i > pos.length) {
-		ball.ribbon.clear()
+		ball.ribbon?.clear()
 		i = 1
 	}
+
 	if (pos[i]) {
-		// ball.position.set(pos[i][0], pos[i][2], pos[i][1])
 		ball.move(pos[i][0], pos[i][2], pos[i][1])
 	}
+
+	// if (i === 73) return
+
 	window.requestAnimationFrame(tick)
 }
 tick()
