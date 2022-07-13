@@ -90,17 +90,19 @@ ball.ribbon?.useTexture(params.textured)
 
 import pos from './pos.json'
 import Spsl from './spsl'
-import TennisModel from './spsl/model/tennis'
+import Model from './spsl/model'
 
 const init = async () => {
 	const spsl = new Spsl()
 	spsl.clock.pause()
-	const model = new TennisModel()
-	spsl.subscribe(model)
-	model.preload(pos)
+
+	const ballModel = new Model({ fps: 1 / 50, prefix: 'ball' })
+	pos.forEach((d, i) => ballModel.setData(i, d))
+
+	spsl.subscribe(ballModel)
 	spsl.clock.play()
 
-	model.on('data', ({ data, frame }) => {
+	ballModel.on('data', ({ data, frame }) => {
 		ball.move(data[0], data[2], data[1])
 		if (pos.length - 1 === frame) {
 			ball.ribbon?.clear()
