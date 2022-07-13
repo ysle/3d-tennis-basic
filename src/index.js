@@ -89,22 +89,24 @@ ball.ribbon?.useTexture(params.textured)
 // ! data
 
 import pos from './pos.json'
+import Spsl from './spsl'
+import TennisModel from './spsl/model/tennis'
 
-let i = 0
-const delay = ms => new Promise(r => setTimeout(r, ms))
-const tick = async () => {
-	i++
-	if (i > pos.length) {
-		ball.ribbon?.clear()
-		i = 1
-	}
+const init = async () => {
+	const spsl = new Spsl()
+	spsl.clock.pause()
+	const model = new TennisModel()
+	spsl.subscribe(model)
+	model.preload(pos)
+	spsl.clock.play()
 
-	if (pos[i]) {
-		ball.move(pos[i][0], pos[i][2], pos[i][1])
-	}
-
-	// if (i === 73) return
-
-	window.requestAnimationFrame(tick)
+	model.on('data', ({ data, frame }) => {
+		ball.move(data[0], data[2], data[1])
+		if (pos.length - 1 === frame) {
+			ball.ribbon?.clear()
+			spsl.clock.currentTime = 0
+		}
+	})
 }
-tick()
+
+init()
