@@ -101,25 +101,34 @@ const eventModel = new Model({ prefix: 'event' })
 
 let i = 0
 data2.forEach(d => {
-	if (!d.event) ballModel.setData(i++, d)
+	if (!d.event) ballModel.setData(i++, d.pos)
 	else eventModel.setData(i, d)
 })
 
 spsl.subscribe(ballModel, eventModel)
 spsl.clock.play()
 
+const tintBall = color => {
+	ball._mesh.material.color.set(color)
+	setTimeout(() => ball._mesh.material.color.set('#cf0'), 150)
+}
+
 eventModel.on('data', ({ data: { event, pos } }) => {
+	console.log({ event })
 	switch (event) {
+		case 'Bounce': {
+			tintBall('#f00')
+			break
+		}
+		case 'Hit': {
+			tintBall('#000')
+			break
+		}
 		case 'Last':
 			ball.ribbon?.clear()
 			spsl.clock.currentTime = 0
 			break
-		case 'Bounce': {
-			ball._mesh.material.color.set('#f00')
-			setTimeout(() => ball._mesh.material.color.set('#cf0'), 100)
-			break
-		}
 	}
 })
 
-ballModel.on('data', ({ data: { pos } }) => ball.move(pos[0], pos[2], pos[1]))
+ballModel.on('data', ({ data }) => ball.move(data[0], data[2], data[1]))
