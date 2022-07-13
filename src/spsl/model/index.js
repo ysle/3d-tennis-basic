@@ -5,7 +5,7 @@ export default class Model extends Dispatcher {
 		super(prefix)
 		this.uuid = uuid
 		this.passive = passive
-		this.fps = fps === undefined ? 1 / 25 : fps
+		this.fps = fps === undefined ? 1 / 50 : fps
 		this._offset = offset || 0
 		this.frame = 0
 		this._frames2 = new Array()
@@ -104,7 +104,7 @@ export default class Model extends Dispatcher {
 			needTick = this.frame !== this.lastTickFrame
 			this.lastTickFrame = this.frame
 			if (needTick) {
-				this.emit('tick', { frame: this.frame, ct })
+				// this.emit('tick', { frame: this.frame, ct })
 				const frame = this.getFrame(this.frame)
 				if (frame && frame.data) {
 					this.emit('data', { ct, frame: this.frame, data: frame.data })

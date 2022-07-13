@@ -88,27 +88,38 @@ ball.ribbon?.useTexture(params.textured)
 
 // ! data
 
-import pos from './pos.json'
+// import pos from './pos.json'
+import data2 from './data2.json'
 import Spsl from './spsl'
 import Model from './spsl/model'
 
-const init = async () => {
-	const spsl = new Spsl()
-	spsl.clock.pause()
+const spsl = new Spsl()
+spsl.clock.pause()
 
-	const ballModel = new Model({ fps: 1 / 50, prefix: 'ball' })
-	pos.forEach((d, i) => ballModel.setData(i, d))
+const ballModel = new Model({ prefix: 'ball' })
+const eventModel = new Model({ prefix: 'event' })
 
-	spsl.subscribe(ballModel)
-	spsl.clock.play()
+let i = 0
+data2.forEach(d => {
+	if (!d.event) ballModel.setData(i++, d)
+	else eventModel.setData(i, d)
+})
 
-	ballModel.on('data', ({ data, frame }) => {
-		ball.move(data[0], data[2], data[1])
-		if (pos.length - 1 === frame) {
+spsl.subscribe(ballModel, eventModel)
+spsl.clock.play()
+
+eventModel.on('data', ({ data: { event, pos } }) => {
+	switch (event) {
+		case 'Last':
 			ball.ribbon?.clear()
 			spsl.clock.currentTime = 0
+			break
+		case 'Bounce': {
+			ball._mesh.material.color.set('#f00')
+			setTimeout(() => ball._mesh.material.color.set('#cf0'), 100)
+			break
 		}
-	})
-}
+	}
+})
 
-init()
+ballModel.on('data', ({ data: { pos } }) => ball.move(pos[0], pos[2], pos[1]))
