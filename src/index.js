@@ -68,7 +68,6 @@ const params = { surface: '', textured: localStorage.getItem('textured') === 'tr
 const pane = new Pane()
 const look = pane.addFolder({ title: 'court type' })
 look.addInput(params, 'surface', { options })
-// look.addInput(params, 'surface', { options })
 
 const updateColors = ({ value: [courtColor, fieldColor] }) => {
 	court.material.color.set(courtColor)
@@ -86,10 +85,15 @@ trail.on('change', ({ value }) => {
 })
 ball.ribbon?.useTexture(params.textured)
 
+// !utils
+
+const tintBall = color => {
+	ball._mesh.material.color.set(color)
+	setTimeout(() => ball._mesh.material.color.set('#cf0'), 150)
+}
+
 // ! data
 
-// import pos from './pos.json'
-import data2 from './data2.json'
 import Spsl from './spsl'
 import Model from './spsl/model'
 
@@ -99,22 +103,10 @@ spsl.clock.pause()
 const ballModel = new Model({ prefix: 'ball' })
 const eventModel = new Model({ prefix: 'event' })
 
-let i = 0
-data2.forEach(d => {
-	if (!d.event) ballModel.setData(i++, d.pos)
-	else eventModel.setData(i, d)
-})
-
 spsl.subscribe(ballModel, eventModel)
-spsl.clock.play()
-
-const tintBall = color => {
-	ball._mesh.material.color.set(color)
-	setTimeout(() => ball._mesh.material.color.set('#cf0'), 150)
-}
 
 eventModel.on('data', ({ data: { event, pos } }) => {
-	console.log({ event })
+	// console.log({ event })
 	switch (event) {
 		case 'Bounce': {
 			tintBall('#f00')
@@ -131,4 +123,15 @@ eventModel.on('data', ({ data: { event, pos } }) => {
 	}
 })
 
-ballModel.on('data', ({ data }) => ball.move(data[0], data[2], data[1]))
+ballModel.on('data', ({ data }) => ball.move(...data))
+
+const init = async () => {
+	let data = await fetch('./data2.json').then(r => r.json())
+	let i = 0
+	data.forEach(d => {
+		if (!d.event) ballModel.setData(i++, d.pos)
+		else eventModel.setData(i, d)
+	})
+	spsl.clock.play()
+}
+init()
