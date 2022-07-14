@@ -124,14 +124,47 @@ eventModel.on('data', ({ data: { event, pos } }) => {
 })
 
 ballModel.on('data', ({ data }) => ball.move(...data))
+const playerModels = []
 
-const init = async () => {
+const load = async () => {
 	let data = await fetch('./data2.json').then(r => r.json())
 	let i = 0
 	data.forEach(d => {
 		if (!d.event) ballModel.setData(i++, d.pos)
 		else eventModel.setData(i, d)
 	})
+
+	let players = await fetch('./players.json').then(r => r.json())
+	players.forEach((teams, t) => {
+		teams.forEach((player, p) => {
+			const model = new Model({ prefix: `player-${t}-${p}` })
+			playerModels.push(model)
+			player.forEach((d, i) => model.setData(i, d))
+		})
+	})
+
+	initPlayers()
+	spsl.subscribe(...playerModels)
 	spsl.clock.play()
 }
-init()
+load()
+
+// players
+
+const initPlayers = () => {
+	playerModels.forEach(model => {
+		const player = new THREE.Group()
+
+		const material = new THREE.MeshStandardMaterial({ color: '#eee' })
+		const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.1, 1), material)
+		const head = new THREE.Mesh(new THREE.SphereGeometry(0.2), material)
+		head.position.setY(0.75)
+
+		body.castShadow = head.castShadow = true
+
+		player.add(head, body)
+		scene.add(player)
+
+		model.on('data', ({ data }) => player.position.set(data[0], 0.75, data[1]))
+	})
+}
