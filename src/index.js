@@ -1,7 +1,7 @@
 import './style.css'
 document.title = `${import.meta.env.VITE_APP_NAME} v.${import.meta.env.VITE_APP_VERSION}`
 
-import { scene } from './3d'
+import { scene, helper } from './3d'
 import * as THREE from 'three'
 import Ball from './3d/mesh/ball'
 
@@ -23,7 +23,7 @@ court.rotateX(-Math.PI / 2)
 court.receiveShadow = true
 scene.add(court)
 
-const padding = 4
+const padding = 9
 const field = new THREE.Mesh(new THREE.PlaneGeometry(size.w + padding, size.h + padding), new THREE.MeshStandardMaterial({ color: '#030' }))
 field.rotateX(-Math.PI / 2)
 field.position.setY(-0.05)
@@ -84,6 +84,9 @@ trail.on('change', ({ value }) => {
 	ball.ribbon?.useTexture(value)
 })
 ball.ribbon?.useTexture(params.textured)
+
+const helpers = pane.addFolder({ title: 'helpers' })
+helpers.addInput(helper, 'visible', { label: 'light' })
 
 // !utils
 
@@ -152,18 +155,16 @@ load()
 // players
 
 const initPlayers = () => {
-	playerModels.forEach(model => {
-		const player = new THREE.Group()
+	playerModels.forEach((model, t) => {
+		const player = (model.player = new THREE.Group())
 
-		const material = new THREE.MeshStandardMaterial({ color: '#eee' })
-		const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.1, 1), material)
-		const head = new THREE.Mesh(new THREE.SphereGeometry(0.2), material)
+		const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.1, 1, 16), new THREE.MeshStandardMaterial({ color: t % 2 ? '#0f0' : '#ff0' }))
+		const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), new THREE.MeshStandardMaterial({ color: '#eee' }))
 		head.position.setY(0.75)
 
-		body.castShadow = head.castShadow = true
+		player.castShadow = body.castShadow = head.castShadow = true
 
-		player.add(head, body)
-		scene.add(player)
+		scene.add(player.add(head, body))
 
 		model.on('data', ({ data }) => player.position.set(data[0], 0.75, data[1]))
 	})
