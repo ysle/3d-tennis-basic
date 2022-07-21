@@ -54,6 +54,30 @@ drawLines([service, 0], [-service, 0])
 drawLines([service, alley], [service, -alley])
 drawLines([-service, alley], [-service, -alley])
 
+//! bounces
+
+// const bounces = []
+// class Bounce (){
+
+// }
+// const addBounce = (x,y,z) =>{
+
+// }
+
+// ! heatmap
+
+const heatmapWidth = size.w + padding
+const heatmapHeight = size.h + padding
+const map = new THREE.Mesh(new THREE.PlaneGeometry(heatmapWidth, heatmapHeight), new THREE.MeshStandardMaterial({ transparent: true }))
+map.rotateX(-Math.PI / 2)
+map.position.setY(0.1)
+scene.add(map)
+
+const mapScale = 20
+import Heatmap from './3d/heatmap'
+const heatmap = new Heatmap(heatmapWidth * mapScale, heatmapHeight * mapScale)
+map.material.map = new THREE.CanvasTexture(heatmap.canvas)
+
 // !options
 
 import { Pane } from 'tweakpane'
@@ -122,11 +146,16 @@ eventModel.on('data', ({ data: { event, pos } }) => {
 		case 'Last':
 			ball.ribbon?.clear()
 			spsl.clock.currentTime = 0
+			heatmap.map.clear()
 			break
 	}
 })
 
-ballModel.on('data', ({ data }) => ball.move(...data))
+ballModel.on('data', ({ data }) => {
+	ball.move(...data)
+	heatmap.map.add([data[0] * mapScale + heatmap.canvas.width / 2, data[2] * mapScale + heatmap.canvas.height / 2, 0.1]).draw()
+	map.material.map.needsUpdate = true
+})
 const playerModels = []
 
 const load = async () => {
