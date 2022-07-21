@@ -124,7 +124,8 @@ const heatmap = new Heatmap(heatmapWidth * mapScale, heatmapHeight * mapScale)
 
 const map = new THREE.Mesh(new THREE.PlaneGeometry(heatmapWidth, heatmapHeight), new THREE.MeshStandardMaterial({ transparent: true, map: new THREE.CanvasTexture(heatmap.canvas) }))
 map.rotateX(-Math.PI / 2)
-map.position.setY(0.1)
+map.position.setY(0.05)
+map.receiveShadow = true
 scene.add(map)
 
 // !options
@@ -191,7 +192,7 @@ eventModel.on('data', ({ data: { event, pos } }) => {
 			break
 		}
 		case 'Hit': {
-			tintBall('#000')
+			tintBall('#f00')
 			break
 		}
 		case 'Last':
