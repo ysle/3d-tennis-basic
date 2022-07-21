@@ -54,15 +54,64 @@ drawLines([service, 0], [-service, 0])
 drawLines([service, alley], [service, -alley])
 drawLines([-service, alley], [-service, -alley])
 
-//! bounces
+//! texts
 
-// const bounces = []
-// class Bounce (){
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
+const loader = new FontLoader()
 
-// }
-// const addBounce = (x,y,z) =>{
+// let texts = {}
 
-// }
+const textMaterial = new THREE.MeshStandardMaterial({ color: 'white' })
+const addTexts = async () => {
+	const font = await new Promise(res => loader.load('droid_sans_regular.typeface.json', res))
+	const config = {
+		font,
+		size: 0.6,
+		height: 0.2,
+		curveSegments: 2,
+		bevelEnabled: true,
+		bevelThickness: 0.05,
+		bevelSize: 0.03
+	}
+
+	const write = (text, color) => {
+		const geometry = new TextGeometry(text, config)
+		geometry.computeBoundingBox()
+		const material = textMaterial.clone()
+		material.color.set(color || 0xffffff)
+
+		const mesh = new THREE.Mesh(geometry, material)
+		mesh.rotateX(Math.PI / -2)
+		mesh.castShadow = true
+		scene.add(mesh)
+		return mesh
+	}
+
+	const title = write(`Berlin 2021 - Women's Singles`)
+	title.position.set(title.geometry.boundingBox.max.x / -2, -0.15, 8)
+
+	const player1 = write('Alizé Cornet')
+	player1.position.set(size.w / 2 - player1.geometry.boundingBox.max.x, -0.1, -(h2 + padding / 2) + 3)
+	player1.rotation.x = Math.PI / -3
+
+	const player2 = write('Belinda Bencic')
+	player2.position.set(size.w / -2, -0.1, -(h2 + padding / 2) + 3)
+	player2.rotation.x = Math.PI / -3
+
+	// texts = { title, player1, player2 }
+}
+addTexts()
+
+/*
+
+Berlin 2021
+Women's Singles
+
+Alizé Cornet
+Belinda Bencic
+
+*/
 
 // ! heatmap
 
@@ -96,6 +145,7 @@ look.addInput(params, 'surface', { options })
 const updateColors = ({ value: [courtColor, fieldColor] }) => {
 	court.material.color.set(courtColor)
 	field.material.color.set(fieldColor)
+	// texts.title?.material.color.set(courtColor)
 }
 
 look.on('change', updateColors)
