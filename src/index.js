@@ -37,6 +37,21 @@ net.rotateX(Math.PI / 2)
 net.castShadow = true
 scene.add(net)
 
+const pillarRadius = 0.05
+const pillarMaterial = new THREE.MeshStandardMaterial({ color: '#eee' })
+const pillars = new THREE.Group()
+pillars.position.setY((size.net - 0.1) / 2)
+scene.add(pillars)
+
+const pillar = new THREE.Mesh(new THREE.CylinderGeometry(pillarRadius, pillarRadius, size.net + 0.1), pillarMaterial)
+pillar.position.setZ(size.h / 2 + size.net)
+pillar.castShadow = true
+pillars.add(pillar)
+
+const pillar2 = pillar.clone()
+pillar2.position.setZ(-(size.h / 2 + size.net))
+pillars.add(pillar2)
+
 // !lines
 
 const material = new THREE.LineBasicMaterial({ color: '#fff' })
