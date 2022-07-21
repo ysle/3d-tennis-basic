@@ -137,6 +137,8 @@ eventModel.on('data', ({ data: { event, pos } }) => {
 	switch (event) {
 		case 'Bounce': {
 			tintBall('#f00')
+			console.log(pos)
+			heatmap.map.add([pos[0] * mapScale + heatmap.canvas.width / 2, pos[2] * mapScale + heatmap.canvas.height / 2, 1]).draw()
 			break
 		}
 		case 'Hit': {
@@ -153,7 +155,7 @@ eventModel.on('data', ({ data: { event, pos } }) => {
 
 ballModel.on('data', ({ data }) => {
 	ball.move(...data)
-	heatmap.map.add([data[0] * mapScale + heatmap.canvas.width / 2, data[2] * mapScale + heatmap.canvas.height / 2, 0.1]).draw()
+	heatmap.map.add([data[0] * mapScale + heatmap.canvas.width / 2, data[2] * mapScale + heatmap.canvas.height / 2, 0.08]).draw()
 	map.material.map.needsUpdate = true
 })
 const playerModels = []
