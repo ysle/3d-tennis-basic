@@ -68,15 +68,15 @@ drawLines([-service, alley], [-service, -alley])
 
 const heatmapWidth = size.w + padding
 const heatmapHeight = size.h + padding
-const map = new THREE.Mesh(new THREE.PlaneGeometry(heatmapWidth, heatmapHeight), new THREE.MeshStandardMaterial({ transparent: true }))
+const mapScale = 20
+
+import Heatmap from './3d/heatmap'
+const heatmap = new Heatmap(heatmapWidth * mapScale, heatmapHeight * mapScale)
+
+const map = new THREE.Mesh(new THREE.PlaneGeometry(heatmapWidth, heatmapHeight), new THREE.MeshStandardMaterial({ transparent: true, map: new THREE.CanvasTexture(heatmap.canvas) }))
 map.rotateX(-Math.PI / 2)
 map.position.setY(0.1)
 scene.add(map)
-
-const mapScale = 20
-import Heatmap from './3d/heatmap'
-const heatmap = new Heatmap(heatmapWidth * mapScale, heatmapHeight * mapScale)
-map.material.map = new THREE.CanvasTexture(heatmap.canvas)
 
 // !options
 
