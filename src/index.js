@@ -137,7 +137,6 @@ eventModel.on('data', ({ data: { event, pos } }) => {
 	switch (event) {
 		case 'Bounce': {
 			tintBall('#f00')
-			console.log(pos)
 			heatmap.map.add([pos[0] * mapScale + heatmap.canvas.width / 2, pos[2] * mapScale + heatmap.canvas.height / 2, 1]).draw()
 			break
 		}
